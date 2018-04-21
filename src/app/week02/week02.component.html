@@ -1,0 +1,207 @@
+<h3>Intent 資料傳遞</h3>
+<img src="../../assets/image/p204.png" alt="">
+<hr>
+<pre>
+  <h3>Activity A 與 B 之間資料傳遞與回傳方式</h3>
+  <img src="../../assets/image/p201.png" alt="">
+  <img src="../../assets/image/p202.png" alt="">
+  <img src="../../assets/image/p203.png" alt="">
+  <span>Activity A 程式</span>  
+    <code>
+        public class A extends AppCompatActivity &#123;
+
+          EditText editText1,editText2;
+          TextView textView;
+          Button button;
+      
+          @Override
+          protected void onActivityResult(int requestCode, int resultCode, Intent data) &#123;
+              super.onActivityResult(requestCode, resultCode, data);
+      
+              Log.d("Demo resultCode", String.valueOf(resultCode));
+      
+      
+              if((resultCode==RESULT_OK) &&( requestCode==101)) &#123;
+      
+                  String result = data.getStringExtra("result");
+                  textView.setText("計算結果 = " + result);
+      
+                  Log.d("Demo requestCode", String.valueOf(requestCode));
+                  Log.d("Demo resultCode", String.valueOf(resultCode));
+                  Log.d("Demo Intent Data", result);
+      
+              &#125;
+      
+          &#125;
+      
+          @Override
+          protected void onCreate(Bundle savedInstanceState) &#123;
+              super.onCreate(savedInstanceState);
+              setContentView(R.layout.activity_a);
+      
+              setTitle("AAAAA");
+      
+              editText1 =(EditText) findViewById(R.id.editText1);
+              editText2 =(EditText) findViewById(R.id.editText2);
+              textView =(TextView) findViewById(R.id.textView);
+              button =(Button) findViewById(R.id.button);
+      
+              button.setOnClickListener(new View.OnClickListener() &#123;
+                  @Override
+                  public void onClick(View v) &#123;
+                      Intent it = new Intent(A.this,B.class);
+      
+                      it.putExtra("data1",editText1.getText().toString());
+                      it.putExtra("data2",editText2.getText().toString());
+      
+                    // startActivity(it);
+                    startActivityForResult(it,101);
+                  &#125;
+              &#125;);
+          &#125;
+      &#125;
+    </code>  
+  <span>A的排版</span>
+  <code>
+      &#60;?xml version="1.0" encoding="utf-8"?&#62;
+      &#60;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:app="http://schemas.android.com/apk/res-auto"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical"
+          tools:context="com.stust.demo20180306.A"&#62;
+      
+          &#60;EditText
+              android:id="@+id/editText1"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:ems="10"
+              android:inputType="textPersonName"
+              android:text="1111" /&#62;
+      
+          &#60;EditText
+              android:id="@+id/editText2"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:ems="10"
+              android:inputType="textPersonName"
+              android:text="2222" /&#62;
+      
+          &#60;TextView
+              android:id="@+id/textView"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="結果 = " /&#62;
+      
+          &#60;Button
+              android:id="@+id/button"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="啟動 B" /&#62;
+      
+      &#60;/LinearLayout&#62;
+  </code>
+  <span>Activity B 程式碼</span>
+  <code>
+      public class B extends AppCompatActivity &#123;
+
+        TextView textView1,textView2,textView3;
+        Button button1,button2;
+    
+    
+        @Override
+        protected void onCreate(Bundle savedInstanceState) &#123;
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_b);
+    
+            setTitle("BBBBB");
+    
+            textView1 = (TextView) findViewById(R.id.textView1);
+            textView2 = (TextView) findViewById(R.id.textView2);
+            textView3 = (TextView) findViewById(R.id.textView3);
+            button1 = (Button) findViewById(R.id.button1);
+            button2 = (Button) findViewById(R.id.button2);
+    
+    
+            Intent it = getIntent();
+            String s1 = it.getStringExtra("data1");
+            String s2 = it.getStringExtra("data2");
+    
+            textView1.setText(s1);
+            textView2.setText(s2);
+    
+    
+            button2.setOnClickListener(new View.OnClickListener() &#123;
+                @Override
+                public void onClick(View v) &#123;
+    
+                    Intent it = new Intent();
+                    it.putExtra("result", textView3.getText().toString());
+                    setResult(RESULT_OK, it);
+    
+                    finish();
+    
+    
+                &#125;
+            &#125;);
+    
+            button1.setOnClickListener(new View.OnClickListener() &#123;
+                @Override
+                public void onClick(View v) &#123;
+                    Integer data1= Integer.parseInt(textView1.getText().toString());
+                    Integer data2= Integer.parseInt(textView2.getText().toString());
+    
+                    Integer result = data1+data2;
+    
+                    textView3.setText(result.toString());
+                &#125;
+            &#125;);
+    
+        &#125;
+    &#125;
+  </code>
+  <span>B的排版</span>
+  <code>
+      &#60;?xml version="1.0" encoding="utf-8"?&#62;
+      &#60;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:app="http://schemas.android.com/apk/res-auto"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical"
+          tools:context="com.stust.demo20180306.B"&#62;
+      
+          &#60;TextView
+              android:id="@+id/textView1"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="1" /&#62;
+      
+          &#60;TextView
+              android:id="@+id/textView2"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="2" /&#62;
+      
+          &#60;Button
+              android:id="@+id/button1"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="加" /&#62;
+      
+          &#60;TextView
+              android:id="@+id/textView3"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="33333" /&#62;
+      
+          &#60;Button
+              android:id="@+id/button2"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="回傳" /&#62;
+      
+      &#60;/LinearLayout&#62;
+  </code>
+</pre>

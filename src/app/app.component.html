@@ -1,12 +1,18 @@
-<ul>
-    <li><a [routerLink]="['/week01']">第1周</a></li>
-    <li><a [routerLink]="['/week02']">第2周</a></li>
-    <li><a [routerLink]="['/week03']">第3周</a></li>
-    <li><a [routerLink]="['/week04']">第4周</a></li>
-    <li><a [routerLink]="['/week05']">第5周</a></li>
-    <li><a [routerLink]="['/week06']">第6周</a></li>
-    <li><a [routerLink]="['/week07']">第7周</a></li>
-    <li><a [routerLink]="['/week08']">第8周</a></li>
-    <li><a [routerLink]="['/week09']">第9周</a></li>
-</ul>
-<router-outlet></router-outlet>
+<nav>
+    <ul>
+        <li><a [routerLink]="['/week01']">第1周</a></li>
+        <li><a [routerLink]="['/week02']">第2周</a></li>
+        <li><a [routerLink]="['/week03']">第3周</a></li>
+        <li><a [routerLink]="['/week04']">第4周</a></li>
+        <li><a [routerLink]="['/week05']">第5周</a></li>
+        <li><a [routerLink]="['/week06']">第6周</a></li>
+        <li><a [routerLink]="['/week07']">第7周</a></li>
+        <li><a [routerLink]="['/week08']">第8周</a></li>
+        <li><a [routerLink]="['/week09']">第9周</a></li>
+    </ul>
+</nav>
+<main>
+    <marquee scrollamount="6" behavior="slide" 
+    style="color:red">未包含作業，到電腦教室再下載或自己準備。</marquee>
+    <router-outlet></router-outlet>
+</main>

@@ -1,0 +1,108 @@
+<h3>try ... catch ... finally</h3>
+<pre>
+  <div>
+    <code>
+        try &#123;
+          int x = 30;
+      //    int y = 0;  除零的錯誤
+  
+          int[] z = new int[]&#123;1,2,3,4&#125;; //超過指標範圍的錯誤
+  
+          String s = "a11";
+          //int y = Integer.parseInt(s); //整數資料格式錯誤
+          int y = z[5];
+  
+          textView.setText(String.valueOf(x / y));
+  
+      &#125;catch (ArithmeticException err)&#123;
+          Log.d("Demo Arithmetic",err.toString());
+      &#125;catch (NumberFormatException err)&#123;
+          Log.d("Demo NumberFormat", err.toString());
+      &#125;catch (ArrayIndexOutOfBoundsException err)&#123;
+          Log.d("Demo IndexOutOfBounds", err.toString());
+      &#125;catch (Exception err)&#123;
+          Log.d("Demo Exception", err.toString());
+      &#125;finally &#123;
+          Log.d("Demo Finally", "Finally, OK ! ");
+      &#125;
+  &#125;
+    </code>
+  </div>
+  <h3>Debug 中斷點的使用方式</h3>
+  <div><code>
+      button2.setOnClickListener(new View.OnClickListener() &#123;
+        @Override
+        public void onClick(View v) &#123;
+           int r =  cal(10);
+           textView.setText(String.valueOf(r));
+        &#125;
+    &#125;);
+
+另外建立副程式
+
+public  int cal(int no)&#123;
+    int sum =0;
+    for(int i=1;i<=no;i++)
+    &#123;
+        sum +=i;
+    &#125;
+    return  sum;
+&#125;
+  </code></div>
+  <h3>Step Into F7 與 Step Over F8</h3>
+  <div><code>
+      Step Into F7 會跳到cal 副程式中debug
+
+      Step Over F8 會直接將cal副程式執行完成
+      <img src="../../assets/image/p301.png" alt="">
+      <img src="../../assets/image/p302.png" alt="">
+  </code></div>
+  <h3>觀察SharedPreference 的檔案位置</h3>
+  <div><code>
+    <img src="../../assets/image/p303.png" alt="">
+    <span>檔案檢視需要模擬器 API 23以下，24(含)以上的不支援</span>
+    <img src="../../assets/image/p304.png" alt="">
+    <img src="../../assets/image/p305.png" alt="">
+  </code></div>
+  <h3>SharedPreferences 完整用法與檔案檢視</h3>
+  <div><code>
+    <span>宣告</span>
+      SharedPreferences sp;
+     <span>建立物件</span>
+      sp=getSharedPreferences("myData2", MODE_PRIVATE);
+     
+     <span>新增資料</span>
+                     sp.edit().putString("name","蘇建郡abc")
+                             .putInt("age",90)
+                             .putString("address","台南市")
+                             .commit();
+     <span>另一種寫法</span>
+     //                SharedPreferences.Editor editor = sp.edit();
+     //                editor.putString("a","123");
+     //                editor.putString("b","456");
+     //                editor.putInt("c",11);
+     //                editor.commit();
+     <span>移除特定資料</span>
+           sp.edit().remove("name").commit();
+     //                sp.edit().remove("name")
+     //                        .remove("age")
+     //                        .remove("address")
+     //                        .commit();
+     <span>整個資料清除</span>
+         sp.edit().clear().commit();
+     
+    <span>檢視檔案可以發現下列的XML檔</span>
+     &#60;?xml version='1.0' encoding='utf-8' standalone='yes' ?&#62;
+     &#60;map&#62;    
+     &#60;string name="name"&#62;蘇建郡abc&#60;/string&#62;    
+     &#60;string name="address"&#62;台南市&#60;/string&#62;    
+     &#60;int name="age" value="90" /&#62;
+     &#60;/map&#62;
+
+     <img src="../../assets/image/p306.png" alt="">
+     <span>檔案檢視需要模擬器 API 23以下，24(含)以上的不支援</span>
+     檔案顯示位置
+     <img src="../../assets/image/p307.png" alt="">
+     <img src="../../assets/image/p308.png" alt="">
+  </code></div>
+</pre>
