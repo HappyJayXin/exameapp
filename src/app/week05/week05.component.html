@@ -1,3 +1,260 @@
-<p>
-  week05 works!
-</p>
+<h3>讀寫Android內部檔案</h3>
+<pre>
+  <div>    
+     讀寫內部檔案
+     <span>(1) 寫入內部檔案，並觀察檔案所在位置</span>
+        FileOutputStream fileOutputStream = openFileOutput("test.txt", MODE_PRIVATE);
+        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+        String str = "我愛 Android";
+        bufferedOutputStream.write(str.getBytes());
+      
+        bufferedOutputStream.flush();
+        bufferedOutputStream.close();
+      
+       <span>(2) 讀取內部檔案 (少量資料)</span>
+       FileInputStream fileInputStream = openFileInput("test.txt");
+       BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+       //  資料一次讀取，只限20bytes
+       byte[] buffbyte = new byte[20];
+       int length = bufferedInputStream.read(buffbyte);
+       bufferedInputStream.close();
+       
+       //顯示資料
+       textView.setText("");
+       textView.append(new String(buffbyte), 0, length);
+     
+       <span>(3) 讀取內部檔案 (大資料，使用迴圈讀取，限英文)</span>
+         FileInputStream fileInputStream = openFileInput("test.txt");
+         BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+         StringBuilder stringBuilder = new StringBuilder();
+         //大檔案，迴圈讀取
+         byte[] buffbyte = new byte[20];
+         int length = 0;
+         {{'
+         while ((length = bufferedInputStream.read(buffbyte)) != -1) {
+          stringBuilder.append(new String(buffbyte), 0, length);
+         }
+         '}}        
+         bufferedInputStream.close();
+         textView.setText(stringBuilder.toString());
+      
+         <span>(4)讀取內部檔案 (大資料，使用迴圈讀取，解決中文問題)</span>
+        FileInputStream fileInputStream = openFileInput("test.txt");
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+        //大檔案，迴圈讀取，解決中文問題，用BufferedReader是讀字元，所以不會出現讀半個文字.
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(bufferedInputStream));
+        
+         StringBuffer stringBuffer = new StringBuffer();
+         {{'
+         while (bufferedReader.ready()) {
+          stringBuffer.append((char) bufferedReader.read());
+          } 
+         '}}            
+         bufferedReader.close();
+         bufferedInputStream.close();
+         textView.setText(stringBuffer.toString());            
+   </div>
+   <div>        
+    <img src="assets/image/p502.PNG" alt="">
+    {{'
+    程式碼
+    public class Main2Activity extends AppCompatActivity {
+    
+        Button btnWrite, btnRead1, btnRead2, btnRead3;
+        TextView textView;
+        EditText editText;
+    
+    
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main2);
+    
+            setTitle("讀寫內部檔案");
+    
+            btnRead1 = (Button) findViewById(R.id.btnRead1);
+            btnRead2 = (Button) findViewById(R.id.btnRead2);
+            btnRead3 = (Button) findViewById(R.id.btnRead3);
+            btnWrite = (Button) findViewById(R.id.btnWrite);
+    
+            editText = (EditText) findViewById(R.id.editText);
+            textView = (TextView) findViewById(R.id.textView);
+    
+            btnWrite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        //    FileOutputStream fout = openFileOutput("test.txt", MODE_PRIVATE|MODE_APPEND);
+                        FileOutputStream fileOutputStream = openFileOutput("test.txt", MODE_PRIVATE);
+    
+                        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+                        String str = editText.getText().toString(); // "我愛 Android";
+                        bufferedOutputStream.write(str.getBytes());
+    
+                        bufferedOutputStream.flush(); // 將緩衝區中的資料全部寫出                      
+                        bufferedOutputStream.close();
+    
+                    } catch (Exception err) {
+                        Log.d("Demo", err.toString());
+                    }
+                }
+            });
+    
+    
+            //簡單簡短文字，不用迴圈
+            btnRead1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        FileInputStream fileInputStream = openFileInput("test.txt");
+    
+                        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+    
+                       //  小資料一次讀取
+                        byte[] buffbyte = new byte[20];
+                        int length = bufferedInputStream.read(buffbyte);
+    
+                        bufferedInputStream.close();
+    
+                        textView.setText("");
+                        textView.append(new String(buffbyte), 0, length);
+                    } catch (Exception err) {
+                        Log.d("Demo", err.toString());
+                    }
+    
+                }
+            });
+    
+    
+    //大檔案，用迴圈讀取，因為是讀取byte中文會有問題
+            btnRead2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        FileInputStream fileInputStream = openFileInput("test.txt");
+    
+                        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+    
+    
+                        StringBuilder stringBuilder = new StringBuilder();
+    
+                        //大檔案，迴圈讀取
+                        byte[] buffbyte = new byte[20];
+    
+                        int length = 0;
+                        while ((length = bufferedInputStream.read(buffbyte)) != -1) {
+                            stringBuilder.append(new String(buffbyte), 0, length);
+                        }
+    
+                        bufferedInputStream.close();
+    
+    //                    do {
+    //                        int length1 = bufferedInputStream.read(buffbyte);
+    //                        if (length1 == -1) break;
+    //                        else
+    //                            stringBuilder.append(new String(buffbyte), 0, length1);
+    //                    } while (true);
+    
+                        textView.setText(stringBuilder.toString());
+                        Log.d("Demo data = ", stringBuilder.toString());
+                    } catch (Exception err) {
+                        Log.d("Demo", err.toString());
+                    }
+    
+                }
+            });
+    
+    
+            //大檔案，用迴圈，解決中文問題
+            btnRead3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        FileInputStream fileInputStream = openFileInput("test.txt");
+                        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+    
+    
+                        //大檔案，迴圈讀取
+                        //解決中文問題
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(bufferedInputStream));
+                        //用BufferedReader,而不是直接用BufferedInputStream讀取,是因為BufferedInputStream是InputStream的間接子類別,
+                        //InputStream的read方法讀取的是一個byte,而一個中文佔兩個byte,所以可能會出現讀到半個文字的情况,就是亂碼.
+                        //BufferedReader继承自Reader,該類的read方法讀取的是char,所以無論如何不會出現讀半個文字.
+                        StringBuffer stringBuffer = new StringBuffer();
+                        while (bufferedReader.ready()) {
+                            stringBuffer.append((char) bufferedReader.read());
+                        }
+    
+                        bufferedReader.close();
+                        bufferedInputStream.close();
+    
+                        textView.setText(stringBuffer.toString());
+                        Log.d("Demo data = ", stringBuffer.toString());
+                    } catch (Exception err) {
+                        Log.d("Demo", err.toString());
+                    }
+                }
+            });
+        }
+    }
+    
+    
+    
+    
+    
+    ------------------------
+    排版
+    
+    &#60;?xml version="1.0" encoding="utf-8"?&#62;
+    &#60;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.example.cc.demo20180316.Main2Activity"&#62;
+    
+        &#60;Button
+            android:id="@+id/btnWrite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="寫入 內部檔案" /&#62;
+    
+        &#60;Button
+            android:id="@+id/btnRead1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="讀出 內部檔案 1 (簡單)" /&#62;
+    
+        &#60;Button
+            android:id="@+id/btnRead2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="讀出 內部檔案 2 (限英文)" /&#62;
+    
+        &#60;Button
+            android:id="@+id/btnRead3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="讀出 內部檔案 3 (中文)" /&#62;
+    
+        &#60;TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#a8dcc9"
+            android:text="TextView" /&#62;
+    
+        &#60;EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="寫入資料"
+            android:inputType="textPersonName" /&#62;
+    &#60;/LinearLayout&#62;
+    '}}
+    檢視內部檔案
+    <img src="assets/image/p501.png" alt="">
+   </div>
+</pre>

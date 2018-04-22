@@ -1,7 +1,7 @@
 <h3>Activity 狀態變化流程，參考第十章</h3>
 <pre> 
-    <img src="../../assets/image/p101.jpg" alt="">
-    <img src="../../assets/image/p102.png" alt="">
+    <img src="assets/image/p101.jpg" alt="">
+    <img src="assets/image/p102.png" alt="">
   簡單的總結幾個動作:
 onCreate()用來做程式的初使化動作;
 onDestory()通常都拿來把onCreate()時的資料做釋放的動作;
@@ -36,6 +36,7 @@ onCreate -> onStart -> onResume
 <hr>
 <h3>播放音樂</h3>
 <pre>
+  <div>
   public MediaPlayer player=new MediaPlayer();
 
   player = MediaPlayer.create(getApplicationContext(), R.raw.music);
@@ -44,6 +45,7 @@ onCreate -> onStart -> onResume
   player.pause();  // 音樂播放暫停
   player.start();  // 音樂繼續播放
   player.release();   // 釋放
+</div>
 
 標準的機制通常 (參考課本pg.10-18)
 將要儲存的動作寫在 onPause()方法中
@@ -54,19 +56,19 @@ onCreate -> onStart -> onResume
 <h3>SharedPreferences 的使用方式, 課本 pg.12-8</h3>
 <pre>
   
-宣告
+<span>宣告</span>
 SharedPreferences sp;
 
-建立物件 onCreate
+<span>建立物件 onCreate</span>
 sp=getSharedPreferences("myData", MODE_PRIVATE);
 
-寫入資料可以放在onPause
+<span>寫入資料可以放在onPause</span>
 
 sp.edit().putString("name","蘇建郡") => 寫入資料name
             .putInt("age",30)  => 寫入資料age
             .commit();
 
-讀出資料可以放在onResume
+<span>讀出資料可以放在onResume</span>
 
 String name= sp.getString("name","no data");  =>讀出資料name
 int age = sp.getInt("age",0); => 讀出資料 age

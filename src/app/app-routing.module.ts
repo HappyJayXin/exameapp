@@ -12,6 +12,7 @@ import { Week08Component } from './week08/week08.component';
 
 
 const routes: Routes = [
+  {path:'',component:Week01Component},
   {path:"week01",component:Week01Component},
   {path:"week02",component:Week02Component},
   {path:"week03",component:Week03Component},

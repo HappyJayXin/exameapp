@@ -3,19 +3,42 @@ body{
     font-family: "標楷體";
     margin: 0;padding: 0;
     font-size: 1.3em;
+    background-color: #f5f6fa;
+    min-width: 1100px;
+}
+-moz-::selection{
+    background-color: rgba(75, 75, 75,.8);    
+}
+::selection{
+    background-color: rgba(75, 75, 75,.8);    
 }
 span{
     color:#EA2027;
     font-weight: bold;
 }
 div{
+    font-size: 1.1em;
     border-radius: 10px;
-    width: 80%;
+    width: 95%;
     height: auto;
-    border: 1px solid #000;
+    border: 1.5px solid #000;
     padding: 10px;
+    background-color: black;color: white;
 }
 h3{
     color: #006266;
     font-size: 2em;
+}
+h3::selection{
+    color: white;
+}
+img{   
+    border-radius: 4px;
+}
+footer{
+    text-align: center;
+    margin: 0 0 1em;
+}
+footer::selection{
+    color: white;
 }

@@ -1,13 +1,13 @@
 <h3>Intent 資料傳遞</h3>
-<img src="../../assets/image/p204.png" alt="">
+<img src="assets/image/p204.png" alt="">
 <hr>
 <pre>
   <h3>Activity A 與 B 之間資料傳遞與回傳方式</h3>
-  <img src="../../assets/image/p201.png" alt="">
-  <img src="../../assets/image/p202.png" alt="">
-  <img src="../../assets/image/p203.png" alt="">
+  <img src="assets/image/p201.png" alt="">
+  <img src="assets/image/p202.png" alt="">
+  <img src="assets/image/p203.png" alt="">
   <span>Activity A 程式</span>  
-    <code>
+    <div>
         public class A extends AppCompatActivity &#123;
 
           EditText editText1,editText2;
@@ -60,9 +60,9 @@
               &#125;);
           &#125;
       &#125;
-    </code>  
+    </div>
   <span>A的排版</span>
-  <code>
+  <div>
       &#60;?xml version="1.0" encoding="utf-8"?&#62;
       &#60;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -101,9 +101,9 @@
               android:text="啟動 B" /&#62;
       
       &#60;/LinearLayout&#62;
-  </code>
+    </div>
   <span>Activity B 程式碼</span>
-  <code>
+  <div>
       public class B extends AppCompatActivity &#123;
 
         TextView textView1,textView2,textView3;
@@ -160,9 +160,9 @@
     
         &#125;
     &#125;
-  </code>
+  </div>
   <span>B的排版</span>
-  <code>
+  <div>
       &#60;?xml version="1.0" encoding="utf-8"?&#62;
       &#60;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -203,5 +203,5 @@
               android:text="回傳" /&#62;
       
       &#60;/LinearLayout&#62;
-  </code>
+  </div>
 </pre>

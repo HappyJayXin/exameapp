@@ -1,3 +1,297 @@
-<p>
-  week04 works!
-</p>
+<h3>權限設計</h3>
+<pre ngNonBindable>
+<div> 
+  <img src="assets/image/p401.PNG" alt=""> 
+    
+  public class MainActivity extends AppCompatActivity &#123;
+
+    Button btn1 ;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) &#123;
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        btn1 = (Button) findViewById(R.id.btn1);
+
+         btn1.setOnClickListener(new View.OnClickListener() &#123;
+             @Override
+             public void onClick(View v) &#123;
+               callPhone();
+             &#125;
+         &#125;);
+
+    &#125;
+
+    private  void callPhone()&#123;
+        if(Build.VERSION.SDK_INT>=23)&#123;
+            if(checkSelfPermission(Manifest.permission.CALL_PHONE)== PackageManager.PERMISSION_GRANTED )&#123;
+                Uri uri= Uri.parse("tel:0999123456");
+                //  Intent it = new Intent(Intent.ACTION_DIAL,uri);
+                Intent it = new Intent(Intent.ACTION_CALL,uri);
+                startActivity(it);
+            &#125;else &#123;
+                Toast.makeText(this, "沒有直接撥打電話權限", Toast.LENGTH_SHORT).show();
+                requestPhoneCallPermission();
+            &#125;
+
+        &#125;
+    &#125;
+
+    private void requestPhoneCallPermission()&#123;
+        if(Build.VERSION.SDK_INT >=23) &#123;   //上一層函數已經檢查過了 啊 為了避免誤用 還是加這句好
+            int callPermission = checkSelfPermission(Manifest.permission.CALL_PHONE);
+
+            if (callPermission != PackageManager.PERMISSION_GRANTED ) &#123;
+                requestPermissions(new String[]&#123;Manifest.permission.CALL_PHONE&#125;,2);//這裡的回傳值是2
+                return;
+            &#125;
+          &#125;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;
+
+        if(requestCode==2)  &#123;  //這裡為甚麼要檢查2 ?看requestPhoneCallPermission()
+            if(grantResults[0] ==PackageManager.PERMISSION_GRANTED)
+            &#123;
+                Log.d("Demo","完成設定權限");
+                Toast.makeText(MainActivity.this,"已設定完成",Toast.LENGTH_SHORT).show();
+            &#125;else
+                Log.d("Demo","未完成設定");
+        &#125;
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    &#125;
+   
+&#125;
+-------------------- 
+&#60;?xml version="1.0" encoding="utf-8"?&#62;
+&#60;manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.stust.demo20180320"&#62;
+
+    &#60;uses-permission android:name="android.permission.CALL_PHONE"&#62;&#60;/uses-permission&#62;
+
+    &#60;application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"&#62;
+        &#60;activity android:name=".MainActivity"&#62;
+            &#60;intent-filter&#62;
+                &#60;action android:name="android.intent.action.MAIN" /&#62;
+
+                &#60;category android:name="android.intent.category.LAUNCHER" /&#62;
+            &#60;/intent-filter&#62;
+        &#60;/activity&#62;
+    &#60;/application&#62;
+
+&#60;/manifest&#62;
+
+---------------------
+排版
+
+&#60;?xml version="1.0" encoding="utf-8"?&#62;
+&#60;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.stust.demo20180320.MainActivity"&#62;
+
+    &#60;Button
+        android:id="@+id/btn1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Phone Call" /&#62;
+&#60;/LinearLayout&#62;   
+</div>
+<h3>兩種權限要求</h3> 
+<div>
+        <img src="assets/image/p402.PNG" alt=""> 
+        <img src="assets/image/p403.PNG" alt=""> 
+        <img src="assets/image/p404.PNG" alt=""> 
+
+public class Main2Activity extends AppCompatActivity &#123;
+
+    Button btn1,btn2;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) &#123;
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main2);
+
+        btn1 = (Button) findViewById(R.id.btn1);
+        btn2 = (Button) findViewById(R.id.btn2);
+
+        btn1.setOnClickListener(new View.OnClickListener() &#123;
+            @Override
+            public void onClick(View v) &#123;
+
+                requestStoragePermission();
+            &#125;
+        &#125;);
+
+        btn2.setOnClickListener(new View.OnClickListener() &#123;
+            @Override
+            public void onClick(View v) &#123;
+                callPhone();
+            &#125;
+        &#125;);
+
+    &#125;
+
+    private void callPhone()&#123;
+        if(Build.VERSION.SDK_INT >=23) &#123;
+            if (checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) &#123;
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:12345678900"));
+                startActivity(callIntent);
+            &#125; else &#123;
+                Toast.makeText(this, "沒有直接撥打電話權限", Toast.LENGTH_SHORT).show();
+                requestPhoneCallPermission();
+            &#125;
+        &#125;
+    &#125;
+
+
+    private void requestPhoneCallPermission()&#123;
+        if(Build.VERSION.SDK_INT >=23) &#123;
+            int callPermission = checkSelfPermission(Manifest.permission.CALL_PHONE);
+
+            Log.d("Demo", "call : " + String.valueOf(callPermission) );
+
+            if (callPermission != PackageManager.PERMISSION_GRANTED ) &#123;
+                requestPermissions(new String[]&#123;Manifest.permission.CALL_PHONE&#125;,2);
+                return;
+            &#125;
+        &#125;
+    &#125;
+
+
+    private void requestStoragePermission()&#123;
+        if(Build.VERSION.SDK_INT >=23) &#123;
+            int readPermission = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            int writePermission = checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            Log.d("Demo", "read : " + String.valueOf(readPermission) +",  write: " + String.valueOf(writePermission));
+
+            if (writePermission != PackageManager.PERMISSION_GRANTED || readPermission !=PackageManager.PERMISSION_GRANTED) &#123;
+                requestPermissions(new String[]&#123;Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE&#125;,1);
+                return;
+            &#125;
+        &#125;
+    &#125;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;
+
+        if(requestCode==1) &#123;  //來自檔案權限的要求
+            
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;
+                Log.d("Demo", "寫的權限 OK");
+            &#125; else
+                Log.d("Demo", "寫入權限 未完成");
+
+            if (grantResults[1] == PackageManager.PERMISSION_GRANTED) &#123;
+                Log.d("Demo", "讀的權限 OK");
+            &#125; else
+                Log.d("Demo", "讀取權限 未完成");
+
+        &#125;
+
+        if(requestCode==2)&#123; //來自直接撥號權限的要求
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;
+                Log.d("Demo","已取得撥號權限");
+            &#125;
+        &#125;
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    &#125;
+&#125;
+</div>
+<h3>權限設定的基本步驟 (以撥打電話為例)</h3>
+<div>
+        <span>(1)步驟一  AndroidManifest設定權限</span>(1)步驟一  AndroidManifest設定權限
+        AndroidManifest設定權限
+        &#60;uses-permission android:name="android.permission.CALL_PHONE" /&#62;
+        
+        <span>(2)步驟二 檢查是否有權限 checkSelfPermission</span>
+         if(Build.VERSION.SDK_INT >=23) &#123;
+                    if (checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) &#123;
+                       //如果有權限，就執行相關動作 
+                       Intent callIntent = new Intent(Intent.ACTION_CALL);
+                        callIntent.setData(Uri.parse("tel:12345678900"));
+                        startActivity(callIntent);
+                    &#125; else &#123; 
+                        Toast.makeText(this, "沒有直接撥打電話權限", Toast.LENGTH_SHORT).show();
+                       // <span>(3)步驟三 如果沒有權限，就執行請求權限的指令 requestPermissions</span>
+                        requestPermissions(new String[]&#123;Manifest.permission.CALL_PHONE&#125;, 1);  // 1 為request_code
+                    &#125;
+        <span>(4) 步驟四 Call Back 檢查權限要求的結果 onRequestPermissionsResult</span>
+         @Override
+            public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;
+                if(requestCode==1)&#123; //來自直接撥號權限的要求
+                    if(grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;
+                        Log.d("Demo","已取得撥號權限");
+                    &#125;
+                &#125;
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            &#125;
+
+-------------------------
+<span>整個範例</span>
+ 
+
+public class Main4Activity extends AppCompatActivity &#123;
+
+    Button btn;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) &#123;
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main4);
+
+        btn = (Button) findViewById(R.id.btn);
+
+        btn.setOnClickListener(new View.OnClickListener() &#123;
+            @Override
+            public void onClick(View v) &#123;
+                //撥打電話
+                callPhone();
+            &#125;
+        &#125;);
+    &#125;
+
+    private void callPhone() &#123;
+
+        if (Build.VERSION.SDK_INT >= 23) &#123;
+            if (checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) &#123;
+                //如果有權限，就執行撥打電話
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:12345678900"));
+                startActivity(callIntent);
+            &#125; else &#123;
+                Toast.makeText(this, "沒有直接撥打電話權限", Toast.LENGTH_SHORT).show();
+                // 沒有權限，就執行要求權限的指令
+                    requestPermissions(new String[]&#123;Manifest.permission.CALL_PHONE&#125;,1);
+            &#125;
+        &#125;
+    &#125;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;
+
+        //顯示撥打電話權限要求的結果
+        if(requestCode==1) &#123;
+            Log.d("Demo", permissions[0] + "  權限請求結果 = " + String.valueOf(grantResults[0]));
+        &#125;
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    &#125;
+&#125;
+
+</div>
+
+</pre>
