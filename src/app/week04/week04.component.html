@@ -144,7 +144,8 @@ public class Main2Activity extends AppCompatActivity &#123;
 
     private void callPhone()&#123;
         if(Build.VERSION.SDK_INT >=23) &#123;
-            if (checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) &#123;
+            if (checkSelfPermission(Manifest.permission.CALL_PHONE) == 
+            PackageManager.PERMISSION_GRANTED) &#123;
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:12345678900"));
                 startActivity(callIntent);
@@ -173,11 +174,14 @@ public class Main2Activity extends AppCompatActivity &#123;
     private void requestStoragePermission()&#123;
         if(Build.VERSION.SDK_INT >=23) &#123;
             int readPermission = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-            int writePermission = checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            int writePermission = checkCallingOrSelfPermission
+            (Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-            Log.d("Demo", "read : " + String.valueOf(readPermission) +",  write: " + String.valueOf(writePermission));
+            Log.d("Demo", "read : " + String.valueOf(readPermission) +
+            ",  write: " + String.valueOf(writePermission));
 
-            if (writePermission != PackageManager.PERMISSION_GRANTED || readPermission !=PackageManager.PERMISSION_GRANTED) &#123;
+            if (writePermission != PackageManager.PERMISSION_GRANTED || 
+            readPermission !=PackageManager.PERMISSION_GRANTED) &#123;
                 requestPermissions(new String[]&#123;Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_EXTERNAL_STORAGE&#125;,1);
                 return;
@@ -186,7 +190,8 @@ public class Main2Activity extends AppCompatActivity &#123;
     &#125;
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, 
+    @NonNull int[] grantResults) &#123;
 
         if(requestCode==1) &#123;  //來自檔案權限的要求
             
@@ -220,7 +225,8 @@ public class Main2Activity extends AppCompatActivity &#123;
         
         <span>(2)步驟二 檢查是否有權限 checkSelfPermission</span>
          if(Build.VERSION.SDK_INT >=23) &#123;
-                    if (checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) &#123;
+                    if (checkSelfPermission(Manifest.permission.CALL_PHONE) ==
+                    PackageManager.PERMISSION_GRANTED) &#123;
                        //如果有權限，就執行相關動作 
                        Intent callIntent = new Intent(Intent.ACTION_CALL);
                         callIntent.setData(Uri.parse("tel:12345678900"));
@@ -228,11 +234,13 @@ public class Main2Activity extends AppCompatActivity &#123;
                     &#125; else &#123; 
                         Toast.makeText(this, "沒有直接撥打電話權限", Toast.LENGTH_SHORT).show();
                        // <span>(3)步驟三 如果沒有權限，就執行請求權限的指令 requestPermissions</span>
-                        requestPermissions(new String[]&#123;Manifest.permission.CALL_PHONE&#125;, 1);  // 1 為request_code
+                        requestPermissions(new String[]&#123;
+                        Manifest.permission.CALL_PHONE&#125;, 1);  // 1 為request_code
                     &#125;
         <span>(4) 步驟四 Call Back 檢查權限要求的結果 onRequestPermissionsResult</span>
          @Override
-            public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;
+            public void onRequestPermissionsResult(int requestCode,
+            @NonNull String[] permissions, @NonNull int[] grantResults) &#123;
                 if(requestCode==1)&#123; //來自直接撥號權限的要求
                     if(grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;
                         Log.d("Demo","已取得撥號權限");
@@ -282,7 +290,8 @@ public class Main4Activity extends AppCompatActivity &#123;
     &#125;
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;
+    public void onRequestPermissionsResult(int requestCode, 
+    @NonNull String[] permissions, @NonNull int[] grantResults) &#123;
 
         //顯示撥打電話權限要求的結果
         if(requestCode==1) &#123;

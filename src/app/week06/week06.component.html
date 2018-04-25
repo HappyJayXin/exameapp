@@ -1,3 +1,397 @@
-<p>
-  week06 works!
-</p>
+<h3>SQLite資料型態 與基本SQL操作指令</h3>
+<pre>
+  SQLite資料庫的資料型態只有下面這幾種，使用它們來決定表格欄位可以儲存的資料型態：
+  <ul>
+    <li>INTEGER – 整數，對應Java 的byte、short、int 和long。</li>
+    <li>REAL – 小數，對應Java 的float 和double。</li>
+    <li>TEXT – 字串，對應Java 的String。</li>
+    <li>BLOB - 大型物件，對應 byte 陣列</li>
+  </ul>
+  在設計表格欄位的時候，需要設定欄位名稱和型態，表格欄位的名稱建議就使用主要類別中的欄位變數名稱。表格欄位的型態依照欄位變數的型態，把它們轉換為SQLite提供的資料型態。通常在表格欄位中還會加入「NOT NULL」的指令，表示這個表格欄位不允許空值，可以避免資料發生問題。
+
+表格的名稱可以使用主要類別的類別名稱，一個SQLite表格建議一定要包含一個可以自動為資料編號的欄位，欄位名稱固定為「_id」，型態為「INTEGER」，後面加上「PRIMARY KEY AUTOINCREMENT」的設定，就可以讓SQLite自動為每一筆資料編號以後儲存在這個欄位。
+
+<div>
+基本SQL語法
+
+<span>查詢 Select </span>
+SELECT DISTINCT column_list
+FROM table_list
+  JOIN table ON join_condition
+WHERE row_filter
+ORDER BY column
+LIMIT count OFFSET offset
+GROUP BY column
+HAVING group_filter;
+
+<span>新增 Insert</span>
+INSERT INTO table1 (
+ column1,
+ column2 ,..)
+VALUES
+ (
+ value1,
+ value2 ,...);
+
+ <span>修改 Update</span>
+UPDATE table
+SET column_1 = new_value_1,
+    column_2 = new_value_2
+WHERE
+    search_condition 
+ORDER column_or_expression
+LIMIT row_count OFFSET offset;
+
+<span>刪除 Delete </span>
+DELETE
+FROM
+ table
+WHERE
+ search_condition;
+</div>
+
+<h3>SQLite 簡易說明</h3>
+<div>
+<span>1.宣告DB變數</span>
+SQLiteDatabase db;
+ 
+<span>2.建立資料庫</span>
+db = openOrCreateDatabase("資料庫名稱", Context.MODE_PRIVATE, null);
+ 
+<span>3.建立資料表 (範例: table名稱為 test)</span>
+String createTable = "create table if not exists test (_id integer primary key autoincrement, name text, age integer null, address text)";
+db.execSQL(createTable);
+<span>4.查詢資料，利用Cursor一筆一筆的將資料讀出</span>
+Cursor c = db.rawQuery("select * from test ", null);
+ 
+String str="";
+  if (c.getCount() > 0) &#125;  //如果沒有資料則離開
+     str = "總共有" + c.getCount() + "筆資料\n";
+     str += " ---------------- \n";
+ 
+     c.moveToLast(); //移至最後一筆，由後往前面讀取，也可以反過來由第一筆往後讀取
+     do&#125;
+        str += "_id : " + String.valueOf(c.getInt(0)) + "\n";
+        str += "name : " + c.getString(1).toString() + "\n";
+        str += "age : " + String.valueOf(c.getInt(2)) + "\n";
+        str += "address : " + c.getString(3).toString() + "\n";
+        str += " ---------------- \n\n";
+      &#123;while(c.moveToPrevious());
+   &#123;
+ 
+  txv.setText(str);  //顯示到 TextView上
+<span>5.新增資料，利用 ContentValues，假設有三個欄位</span>
+public  void addData(String name, int age, String address)&#125;
+        ContentValues cv = new ContentValues(3);  //3個欄位
+        cv.put("name",name);
+        cv.put("age",age);
+        cv.put("address",address);
+ 
+        db.insert("test",null,cv);
+ 
+        //下列作法是直接使用SQL指令，但是這樣容易造成SQL Injection的問題
+        //    String data1 = "insert into test(name,age,address) values('test',88,'taipei')";
+        //    db.execSQL(data1);
+    &#123;
+    <span>6.修改資料，利用 ContentValues</span>
+ 
+     String id = idEt.getText().toString();
+ 
+     ContentValues cv = new ContentValues(3);
+     cv.put("name","蔡英文"); //第一個參數為欄位名稱，第二個參數為要修改的資料
+     cv.put("age",99);
+     cv.put("address","Tainan");
+    {{'db.update("test", cv, "_id=?", new String[]{id}); //參數一:表格名稱，參數二:where的條件，參數三:對應第二參數的資料'}}
+      
+ 
+<span>7.刪除資料</span>
+ 
+String id = idEt.getText().toString();
+{{'db.delete("test", "_id=?", new String[]{id}); //參數一:表格名稱
+'}}
+</div>
+<div>
+  <span>完正範例</span>
+  <img src="assets/image/p601.PNG" alt="">
+  <img src="assets/image/p602.PNG" alt="">
+
+  &#60;?xml version="1.0" encoding="utf-8"?&#62;
+  &#60;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      tools:context="com.stust.demo20180403.Main1Activity"&#62;
+  
+      &#60;Button
+          android:id="@+id/btnSelect"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="查詢資料" /&#62;
+  
+      &#60;Button
+          android:id="@+id/btnInsert"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="新增資料" /&#62;
+  
+      &#60;TextView
+          android:id="@+id/textView"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="TextView" /&#62;
+  &#60;/LinearLayout&#62;
+{{'
+public class Main1Activity extends AppCompatActivity {
+
+  SQLiteDatabase db;
+
+  Button btnSelect, btnInsert;
+TextView textView;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_main1);
+
+      setTitle("SQLite 簡介");
+
+      btnInsert = (Button) findViewById(R.id.btnInsert);
+      btnSelect = (Button) findViewById(R.id.btnSelect);
+      textView = (TextView) findViewById(R.id.textView);
+
+      db= openOrCreateDatabase("myDB.db",MODE_PRIVATE,null);
+
+      String createTable = "create table if not exists test " +
+              "(_id integer primary key autoincrement, " +
+              "name text, " +
+              "age integer null, " +
+              "address text)";
+
+      db.execSQL(createTable);
+
+      btnInsert.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+
+              String insertData = "insert into test (name,age,address) values ("小章哥",20,"桃園")";//改單引號!
+              db.execSQL(insertData);
+
+          }
+      });
+
+
+      btnSelect.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+              String selectData = "select * from test";
+              Cursor c = db.rawQuery(selectData, null);
+
+              textView.setText("資料筆數 = " + String.valueOf(c.getCount()));
+
+             // c.moveToFirst();
+              c.moveToLast();
+              String data = "";
+              data = String.valueOf( c.getInt(0));
+              data +=", " + c.getString(1);
+              data +=", " + String.valueOf( c.getInt(2));
+              data += ", " + c.getString(3);
+              textView.append("\n" + data);
+          }
+      });
+'}}  
+</div>
+<div>
+<span>完整範例2</span>
+
+<img src="assets/image/p603.PNG" alt="">
+<img src="assets/image/p604.PNG" alt="">
+
+&#60;?xml version="1.0" encoding="utf-8"?&#62;
+&#60;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.stust.demo20180403.Main1Activity"&#62;
+
+    &#60;Button
+        android:id="@+id/btnSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="查詢資料" /&#62;
+
+    &#60;Button
+        android:id="@+id/btnInsert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="新增資料" /&#62;
+
+    &#60;Button
+        android:id="@+id/btnDelete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="刪除" /&#62;
+
+    &#60;Button
+        android:id="@+id/btnUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="修改" /&#62;
+
+    &#60;EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="請輸入資料"
+        android:inputType="textPersonName"
+        android:text="'蘇建郡',33,'台南'" /&#62;
+
+    &#60;ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"&#62;
+    &#60;TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" /&#62;
+    &#60;/ScrollView&#62;
+&#60;/LinearLayout&#62;
+
+----------------
+{{'
+public class Main1Activity extends AppCompatActivity {
+
+  SQLiteDatabase db;
+
+  Button btnSelect, btnInsert, btnUpdate, btnDelete;
+  TextView textView;
+  EditText editText;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_main1);
+
+      setTitle("SQLite 簡介");
+
+      btnInsert = (Button) findViewById(R.id.btnInsert);
+      btnSelect = (Button) findViewById(R.id.btnSelect);
+      btnDelete = (Button) findViewById(R.id.btnDelete);
+      btnUpdate = (Button) findViewById(R.id.btnUpdate);
+      textView = (TextView) findViewById(R.id.textView);
+      editText = (EditText) findViewById(R.id.editText);
+
+      db = openOrCreateDatabase("myDB.db", MODE_PRIVATE, null);
+
+      String createTable = "create table if not exists test " +
+              "(_id integer primary key autoincrement, " +
+              "name text, " +
+              "age integer null, " +
+              "address text)";
+
+      db.execSQL(createTable);
+
+      btnInsert.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+
+//                String d = editText.getText().toString();
+//                String insertData = "insert into test (name,age,address) values (" + d +  ")";
+//                db.execSQL(insertData);
+
+              addData("王曉華", 22, "Taipei");
+              addData("陳六", 34, "台中");
+
+              showData();
+          }
+      });
+
+
+      btnSelect.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+
+              showData();
+
+          }
+      });
+
+
+      btnDelete.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+           //   db.execSQL("delete from test where _id=" + editText.getText().toString());
+              deleteData(editText.getText().toString());
+              showData();
+          }
+      });
+
+      btnUpdate.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            //  db.execSQL("update test set name ="李四", age=99 where _id=" + editText.getText());
+
+              updateData(editText.getText().toString(),"劉先生",66,"東區");
+              showData();
+          }
+      });
+
+  }
+
+  private void addData(String name, Integer age, String address) {
+
+      ContentValues cv = new ContentValues(3);
+      cv.put("name", name);
+      cv.put("age", age);
+      cv.put("address", address);
+
+      db.insert("test", null, cv);
+
+
+  }
+
+  private void updateData(String _id, String name, Integer age, String address){
+
+      ContentValues cv = new ContentValues(3);
+      cv.put("name", name);
+      cv.put("age", age);
+      cv.put("address", address);
+
+      db.update("test",cv,"_id=?", new String[]{_id});
+
+  }
+
+  public void deleteData(String _id){
+      db.delete("test", "_id=?", new String[]{_id});
+  }
+
+  private void showData() {
+
+      String selectData = "select * from test";
+      Cursor c = db.rawQuery(selectData, null);
+
+      textView.setText("資料筆數 = " + String.valueOf(c.getCount()));
+
+      String data = "";
+      c.moveToFirst();
+      // c.moveToLast();
+      do {
+          data += String.valueOf(c.getInt(0));
+          data += ", " + c.getString(1);
+          data += ", " + String.valueOf(c.getInt(2));
+          data += ", " + c.getString(3) + "\n\n";
+          //}while (c.moveToPrevious());
+      } while (c.moveToNext());
+
+
+      textView.append("\n" + data);
+  }
+}
+
+'}}
+</div>
+</pre>

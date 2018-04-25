@@ -9,10 +9,11 @@ import { Week07Component } from './week07/week07.component';
 import { Week05Component } from './week05/week05.component';
 import { Week06Component } from './week06/week06.component';
 import { Week08Component } from './week08/week08.component';
+import { AndroidhomeComponent } from './androidhome/androidhome.component';
 
 
 const routes: Routes = [
-  {path:'',component:Week01Component},
+  {path:'',component:AndroidhomeComponent},
   {path:"week01",component:Week01Component},
   {path:"week02",component:Week02Component},
   {path:"week03",component:Week03Component},
@@ -31,4 +32,4 @@ const routes: Routes = [
 export class AppRoutingModule { }
 export const routingComponents=[Week01Component,Week02Component,
   Week03Component,Week04Component,Week05Component,Week06Component,
-  Week07Component,Week08Component,Week09Component];
+  Week07Component,Week08Component,Week09Component,AndroidhomeComponent];

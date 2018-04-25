@@ -1,0 +1,16 @@
+#home{
+    color: black;
+    text-align: center;
+    background: transparent !important;
+    border: none;
+}
+#home a{
+    margin: auto;
+}
+#home img{    
+    margin:3em auto;
+    box-shadow: 2px 3px 5px 1px #000;
+}
+#home img:hover{
+    box-shadow: 2px 3px 5px 1px #00b894;
+}
