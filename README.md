@@ -1,6 +1,6 @@
 # 使用Angular製作網頁
 <p>android studio 期中上機考</p>
-
+<a href="https://happyjayxin.github.io/exameapp/">go to Web</a>
 
 # Exameapp
 
